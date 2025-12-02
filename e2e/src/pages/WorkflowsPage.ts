@@ -41,7 +41,7 @@ export class WorkflowsPage extends BasePage {
 
         // Click Fusion SOAR in the navigation menu (not the home page cards)
         const navigation = this.page.locator('nav, [role="navigation"]');
-        const fusionSoarButton = navigation.getByRole('button', { name: 'Fusion SOAR' });
+        const fusionSoarButton = navigation.getByRole('button', { name: 'Fusion SOAR', exact: true });
         await fusionSoarButton.click();
 
         // Wait for Workflows link to be visible in submenu
