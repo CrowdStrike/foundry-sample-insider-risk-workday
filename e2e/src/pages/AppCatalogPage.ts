@@ -34,10 +34,11 @@ export class AppCatalogPage extends BasePage {
 
     await this.navigateToPath('/foundry/app-catalog', 'App catalog page');
 
-    const searchBox = this.page.getByRole('searchbox', { name: 'Search' });
-    await searchBox.fill(appName);
-    await this.page.keyboard.press('Enter');
-    await this.page.waitForLoadState('networkidle');
+    const filterBox = this.page.getByPlaceholder('Type to filter');
+    if (await filterBox.isVisible().catch(() => false)) {
+      await filterBox.fill(appName);
+      await this.page.waitForLoadState('networkidle');
+    }
 
     const appLink = this.page.getByRole('link', { name: appName, exact: true });
 
@@ -292,17 +293,31 @@ export class AppCatalogPage extends BasePage {
       await installingToast.waitFor({ state: 'visible', timeout: 10000 });
       this.logger.info('Installation started - "installing" toast visible');
     } catch (error) {
-      this.logger.warn('Installing toast not visible, checking for installed toast');
+      throw new Error(`Installation failed to start for app '${appName}' - "installing" message never appeared. Installation may have failed immediately.`);
     }
 
-    // Wait for the "installed" toast (appears up to 10 seconds after installing toast)
-    // Use more specific pattern to avoid matching other page elements
-    const installedToast = this.page.getByText(`${appName} installed`).first();
+    // Wait for second toast with final status (installed or error)
+    const installedMessage = this.page.getByText(`${appName} installed`).first();
+    const errorMessage = this.page.getByText(`Error installing ${appName}`).first();
+
     try {
-      await installedToast.waitFor({ state: 'visible', timeout: 15000 });
-      this.logger.success('Installation completed - "installed" toast visible');
+      const result = await Promise.race([
+        installedMessage.waitFor({ state: 'visible', timeout: 60000 }).then(() => 'success'),
+        errorMessage.waitFor({ state: 'visible', timeout: 60000 }).then(() => 'error')
+      ]);
+
+      if (result === 'error') {
+        // Get the actual error message from the toast and clean up formatting
+        const errorText = await errorMessage.textContent();
+        const cleanError = errorText?.replace(/\s+/g, ' ').trim() || 'Unknown error';
+        throw new Error(`Installation failed for app '${appName}': ${cleanError}`);
+      }
+      this.logger.success('Installation completed successfully - "installed" message appeared');
     } catch (error) {
-      this.logger.warn('Installed toast not visible, will verify installation status in next step');
+      if (error.message.includes('Installation failed')) {
+        throw error;
+      }
+      throw new Error(`Installation status unclear for app '${appName}' - timed out waiting for "installed" or "error" message after 60 seconds`);
     }
   }
 
