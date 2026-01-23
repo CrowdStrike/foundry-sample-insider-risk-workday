@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { RetryHandler } from '../utils/SmartWaiter';
+import { config } from '../config/TestConfig';
 
 /**
  * Page Object for Foundry App Builder
@@ -20,18 +21,14 @@ export class AppBuilderPage extends BasePage {
       async () => {
         this.logger.info('Checking if workflow provisioning has already been disabled in latest release');
 
-        // Navigate to App Catalog to check release notes
-        await this.navigateToPath('/foundry/app-catalog', 'App Catalog');
-        await this.page.waitForLoadState('networkidle');
-
-        // Search for the app
-        const searchBox = this.page.locator('input[type="search"], input[placeholder*="Search"]').first();
-        await searchBox.waitFor({ state: 'visible', timeout: 10000 });
-        await searchBox.fill(appName);
+        // Navigate to app catalog with filter query parameter
+        const baseUrl = config.falconBaseUrl || 'https://falcon.us-2.crowdstrike.com';
+        const filterParam = encodeURIComponent(`name:~'${appName}'`);
+        await this.page.goto(`${baseUrl}/foundry/app-catalog?filter=${filterParam}`);
         await this.page.waitForLoadState('networkidle');
 
         // Click on the app link
-        const appLink = this.page.locator(`a:has-text("${appName}")`).first();
+        const appLink = this.page.getByRole('link', { name: appName, exact: true });
         await appLink.waitFor({ state: 'visible', timeout: 10000 });
         await appLink.click();
         await this.page.waitForLoadState('networkidle');
