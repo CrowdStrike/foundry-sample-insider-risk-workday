@@ -28,7 +28,7 @@ test.describe('Insider Risk Workday - E2E Tests', () => {
     const searchBox = workflowsPage.page.getByRole('searchbox').or(workflowsPage.page.getByPlaceholder(/search/i));
     await searchBox.fill('Workday get leavers data');
 
-    await workflowsPage.page.getByText('This may take a few moments').waitFor({ state: 'hidden', timeout: 30000 });
+    await workflowsPage.page.getByText('This may take a few moments').first().waitFor({ state: 'hidden', timeout: 30000 });
     await workflowsPage.page.waitForLoadState('networkidle');
 
     // Verify the action is visible
