@@ -198,9 +198,10 @@ export class AppCatalogPage extends BasePage {
    */
   private async configureApiIntegrationIfNeeded(): Promise<void> {
     // Verify the credential prompt appears — this app requires API credentials
-    const firstInput = this.page.locator('input[type="text"], input[type="url"], input[type="password"]');
+    // Check for password fields specifically since workflow config screens only have text fields
+    const passwordInput = this.page.locator('input[type="password"]');
     try {
-      await firstInput.first().waitFor({ state: 'visible', timeout: 15000 });
+      await passwordInput.first().waitFor({ state: 'visible', timeout: 15000 });
     } catch (error) {
       throw new Error('This app should prompt for API credentials');
     }
