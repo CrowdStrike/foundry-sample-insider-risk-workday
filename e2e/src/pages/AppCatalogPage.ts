@@ -197,6 +197,15 @@ export class AppCatalogPage extends BasePage {
    * Fills in dummy values for all configuration fields and clicks through settings.
    */
   private async configureApiIntegrationIfNeeded(): Promise<void> {
+    // Verify the credential prompt appears — this app requires API credentials
+    // Check for password fields specifically since workflow config screens only have text fields
+    const passwordInput = this.page.locator('input[type="password"]');
+    try {
+      await passwordInput.first().waitFor({ state: 'visible', timeout: 15000 });
+    } catch (error) {
+      throw new Error('This app should prompt for API credentials');
+    }
+
     let configCount = 0;
     let hasNextSetting = true;
 
