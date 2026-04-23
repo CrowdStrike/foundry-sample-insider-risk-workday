@@ -14,7 +14,7 @@ test.describe('Insider Risk Workday - E2E Tests', () => {
     const nextButton = workflowsPage.page.getByRole('button', { name: 'Next' });
     await nextButton.click();
 
-    await workflowsPage.page.waitForLoadState('networkidle');
+    await workflowsPage.page.waitForLoadState('domcontentloaded');
     await workflowsPage.page.getByText('Add next').waitFor({ state: 'visible', timeout: 10000 });
 
     // Click "Add action" button
@@ -22,14 +22,14 @@ test.describe('Insider Risk Workday - E2E Tests', () => {
     const addActionButton = addNextMenu.getByTestId('context-menu-seq-action-button');
     await addActionButton.click();
 
-    await workflowsPage.page.waitForLoadState('networkidle');
+    await workflowsPage.page.waitForLoadState('domcontentloaded');
 
     // Search for the Workday API integration action
     const searchBox = workflowsPage.page.getByRole('searchbox').or(workflowsPage.page.getByPlaceholder(/search/i));
     await searchBox.fill('Workday get leavers data');
 
     await workflowsPage.page.getByText('This may take a few moments').first().waitFor({ state: 'hidden', timeout: 30000 });
-    await workflowsPage.page.waitForLoadState('networkidle');
+    await workflowsPage.page.waitForLoadState('domcontentloaded');
 
     // Verify the action is visible
     const actionElement = workflowsPage.page.getByText('Workday get leavers data', { exact: false });
