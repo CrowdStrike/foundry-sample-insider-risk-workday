@@ -1,7 +1,5 @@
 import { Page } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { RetryHandler } from '../utils/SmartWaiter';
-import { config } from '../config/TestConfig';
+import { BasePage, RetryHandler, config } from '@crowdstrike/foundry-playwright';
 
 /**
  * Page Object for Foundry App Builder
@@ -10,6 +8,14 @@ import { config } from '../config/TestConfig';
 export class AppBuilderPage extends BasePage {
   constructor(page: Page) {
     super(page, 'AppBuilderPage');
+  }
+
+  protected getPagePath(): string {
+    throw new Error('Direct path navigation not supported. Use navigateToAppDetailsPage() instead.');
+  }
+
+  protected async verifyPageLoaded(): Promise<void> {
+    await this.page.getByRole('heading', { name: 'Logic', level: 3 }).waitFor({ state: 'visible', timeout: 10000 });
   }
 
   /**
