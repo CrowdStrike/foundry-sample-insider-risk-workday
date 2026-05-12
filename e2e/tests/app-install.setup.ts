@@ -30,15 +30,8 @@ setup('install app', async ({ page }) => {
       await page.getByRole('textbox', { name: 'Workday tenant Id (Generate access token)' }).fill('test-tenant-id');
       await page.getByRole('textbox', { name: 'Refresh token' }).fill('test-refresh-token');
       await page.getByRole('textbox', { name: 'Workday tenant Id (Get leavers data)' }).fill('test-tenant-id');
-      await nextButton.click();
-      await page.waitForLoadState('domcontentloaded').catch(() => {});
 
-      // Screen 4: Setting 4 — same fields as Screen 3 (Target Groups pre-filled)
-      await page.getByRole('textbox', { name: 'Workday tenant Id (Generate access token)' }).fill('test-tenant-id');
-      await page.getByRole('textbox', { name: 'Refresh token' }).fill('test-refresh-token');
-      await page.getByRole('textbox', { name: 'Workday tenant Id (Get leavers data)' }).fill('test-tenant-id');
-
-      // "Install app" button is visible on Screen 4
+      // "Install app" button is visible on Screen 3
     },
   });
 });
