@@ -31,8 +31,8 @@ test.describe('Insider Risk Workday - E2E Tests', () => {
     await workflowsPage.page.getByText('This may take a few moments').first().waitFor({ state: 'hidden', timeout: 30000 });
     await workflowsPage.page.waitForLoadState('domcontentloaded');
 
-    // Verify the action is visible
-    const actionElement = workflowsPage.page.getByText('Workday get leavers data', { exact: false });
+    // Verify the action is visible (use .first() since search input also contains the text)
+    const actionElement = workflowsPage.page.getByText('Workday get leavers data', { exact: false }).first();
     await expect(actionElement).toBeVisible({ timeout: 10000 });
     console.log('✓ API integration action available: Workday get leavers data');
 
