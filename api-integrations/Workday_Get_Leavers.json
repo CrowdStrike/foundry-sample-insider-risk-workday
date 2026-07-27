@@ -1,9 +1,6 @@
 {
   "components": {},
   "info": {
-    "contact": {
-      "email": "shalabh.sharma@crowdstrike.com"
-    },
     "description": "Workday API get leaving employees data",
     "title": "Workday get leavers data",
     "version": ""
