@@ -10,9 +10,6 @@
     }
   },
   "info": {
-    "contact": {
-      "email": "shalabh.sharma@crowdstrike.com"
-    },
     "description": "Workday API generate access_token using refresh_token",
     "title": "Workday generate access token",
     "version": ""
