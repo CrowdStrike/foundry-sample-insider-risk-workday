@@ -1,11 +1,20 @@
+"""Function to retrieve linked Active Directory accounts for Falcon Identity Protection entities."""
 from crowdstrike.foundry.function import Function, Request, Response, APIError
 from falconpy import IdentityProtection
 
-func = Function.instance()
+FUNC = Function.instance()
 
 
-@func.handler(method="GET", path="/linked-accounts")
+@FUNC.handler(method="GET", path="/linked-accounts")
 def get_linked_accounts(request: Request) -> Response:
+    """Retrieve linked AD accounts for a given entityID.
+
+    Args:
+        request: Request object containing EntityId in body
+
+    Returns:
+        Response object with linked entities or error
+    """
     try:
         # Getting input variables
         entity_id = request.body.get("EntityId")
@@ -63,7 +72,7 @@ def get_linked_accounts(request: Request) -> Response:
             code=200,
         )
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except
         return Response(
             code=500,
             errors=[APIError(code=500, message=f"Internal server error: {str(e)}")],
@@ -71,4 +80,4 @@ def get_linked_accounts(request: Request) -> Response:
 
 
 if __name__ == "__main__":
-    func.run()
+    FUNC.run()
