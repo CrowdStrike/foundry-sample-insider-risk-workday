@@ -1,4 +1,7 @@
 """Function to retrieve linked Active Directory accounts for Falcon Identity Protection entities."""
+import json
+import uuid
+
 from crowdstrike.foundry.function import Function, Request, Response, APIError
 from falconpy import IdentityProtection
 
@@ -18,6 +21,20 @@ def get_linked_accounts(request: Request) -> Response:
     try:
         # Getting input variables
         entity_id = request.body.get("EntityId")
+        # Validate entity_id is provided and is a valid UUID to prevent injection
+        if not entity_id:
+            return Response(
+                code=400,
+                errors=[APIError(code=400, message="EntityId is required")]
+            )
+        try:
+            # Validate UUID format - this prevents injection attacks
+            uuid.UUID(str(entity_id))
+        except (ValueError, TypeError):
+            return Response(
+                code=400,
+                errors=[APIError(code=400, message="EntityId must be a valid UUID format")]
+            )
 
         # Initialize client without explicit authentication parameters
         falcon = IdentityProtection()
@@ -36,7 +53,8 @@ def get_linked_accounts(request: Request) -> Response:
   }
 }
 """
-        variables = f'{{"entityId": "{entity_id}"}}'
+        # Use proper JSON serialization with validated UUID to prevent injection
+        variables = json.dumps({"entityId": str(entity_id)})
 
         response = falcon.graphql(query=idp_query, variables=variables)
         if response.get("status_code") != 200:
