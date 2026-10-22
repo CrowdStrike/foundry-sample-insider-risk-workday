@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
-          node-version: '22'
+          node-version: 24.22.1
 
       - name: Setup Foundry CLI
         uses: foundry-cli/setup-foundry-cli@c6b5cbb8bf4d0ab78f0d9fa3e5b3b0be50ce8d77 # v0.5.0
