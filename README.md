@@ -30,6 +30,7 @@ This app illustrates the following functionality amongst other components:
 ## Prerequisites
 
 * The Foundry CLI (instructions below)
+* [pre-commit](https://pre-commit.com/) for secret scanning
 * Python 3.14+ (needed if modifying the app's functions). See [Python For Beginners](https://www.python.org/about/gettingstarted/) for installation instructions.
 * Workday Configuration
 * Active Directory Configuration
@@ -93,6 +94,13 @@ Clone this sample to your local system, or [download as a zip file](https://gith
 ```shell
 git clone https://github.com/CrowdStrike/foundry-sample-insider-risk-workday
 cd foundry-sample-insider-risk-workday
+```
+
+Set up secret scanning
+
+```shell
+pip install pre-commit
+pre-commit install
 ```
 
 Log in to Foundry:
@@ -199,6 +207,35 @@ Cloud-only users (those without Active Directory accounts) are not supported in 
 
 - Foundry documentation: [US-1](https://falcon.crowdstrike.com/documentation/category/c3d64B8e/falcon-foundry) | [US-2](https://falcon.us-2.crowdstrike.com/documentation/category/c3d64B8e/falcon-foundry) | [EU](https://falcon.eu-1.crowdstrike.com/documentation/category/c3d64B8e/falcon-foundry)
 - Foundry learning resources: [US-1](https://falcon.crowdstrike.com/foundry/learn) | [US-2](https://falcon.us-2.crowdstrike.com/foundry/learn) | [EU](https://falcon.eu-1.crowdstrike.com/foundry/learn)
+
+## Secret Scanning
+
+This repository enforces secret scanning on every commit via the [pre-commit](https://pre-commit.com/) framework using [betterleaks](https://github.com/betterleaks/betterleaks), a tool that detects secrets and credentials in source code before they are committed.
+
+### Setup
+
+```bash
+# Install pre-commit (run once)
+brew install pre-commit
+
+# Register the git hook (run once after cloning)
+pre-commit install
+```
+
+### How it works
+
+On each `git commit`, betterleaks scans all staged files for secrets and credentials.
+
+| Scenario | Result |
+|----------|--------|
+| Secret detected in staged files | Commit blocked |
+| No secrets found | Commit allowed |
+| pre-commit not installed | No hook runs (secrets not scanned) |
+
+**Bypass (false positives only):**
+```bash
+git commit --no-verify
+```
 
 ---
 
