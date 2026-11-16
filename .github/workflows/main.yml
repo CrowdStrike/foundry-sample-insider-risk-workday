@@ -17,7 +17,7 @@ jobs:
           cache: 'pip'
           cache-dependency-path: 'functions/identity-context/requirements.txt'
       - name: Install Python dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt -r ../../.github/requirements-dev.txt
         working-directory: functions/identity-context
       - name: Run tests if test_main.py exists
         run: |
