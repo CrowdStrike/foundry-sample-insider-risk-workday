@@ -1,7 +1,9 @@
 version: 2
 updates:
   - package-ecosystem: pip
-    directory: "/functions/identity-context/"
+    directories:
+      - "/.github"
+      - "/functions/identity-context/"
     schedule:
       interval: "weekly"
       day: "monday"
